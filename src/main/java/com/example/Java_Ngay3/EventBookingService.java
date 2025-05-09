@@ -27,6 +27,16 @@ public class EventBookingService {
         return false;
     }
 
+    // Lấy sự kiện theo eventId
+    public Event getEventById(int eventId) {
+        for (Event event : events) {
+            if (event.getEventId() == eventId) {
+                return event;
+            }
+        }
+        return null;
+    }
+
     //Thêm sự kiện
     public void addEvent(Event event) {
         events.add(event);
@@ -72,7 +82,7 @@ public class EventBookingService {
             } while (eventName.trim().isEmpty());
 
             for (Event event : events) {
-                if (event.getEventName().equalsIgnoreCase(eventName)) {
+                if (event.getEventName().contains(eventName)) {
                     System.out.println(event);
                     search = true;
                 }
@@ -91,13 +101,17 @@ public class EventBookingService {
             return;
         }
 
-        Event event = events.stream().filter(e -> e.getEventId() == eventId).findFirst().orElse(null);
-        if (event != null && seatNumber > event.getMaxSeats()) {
-            System.out.println("Seat number exceeds max seats of the event!");
+        Event targetEvent = getEventById(eventId);
+        if (seatNumber > targetEvent.getMaxSeats()) {
+            System.out.println("Số ghế bạn chọn vượt quá số lượng ghế của sự kiện");
             return;
         }
 
         HashSet<Integer> seats = bookedSeats.computeIfAbsent(eventId, k -> new HashSet<>());
+        if (seats.size() >= targetEvent.getMaxSeats()) {
+            System.out.println("Số ghế bạn chọn vượt quá số lượng ghế của sự kiện");
+            return;
+        }
         if (!seats.contains(seatNumber)) {
             seats.add(seatNumber);
             bookings.add(new Booking(userEmail, eventId, seatNumber));

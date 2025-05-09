@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class EventBookingMain {
 
+    //Menu chức năng
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         EventBookingService eventBookingService = new EventBookingService();
